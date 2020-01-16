@@ -15,7 +15,8 @@ namespace TestDrivingFun.Engine
 
         public CreateCarnivore(Carnivore carnivore, in string causationId, in string correlationId) : base(carnivore.Id, causationId, correlationId, DateTime.Now)
         {
-            throw new NotImplementedException();
+            X = carnivore.X;
+            Y = carnivore.Y;
         }
     }
 }

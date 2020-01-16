@@ -30,4 +30,8 @@
     <PackageReference Include="Serilog.Sinks.Seq" Version="4.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TestDrivingFun.Engine\TestDrivingFun.Engine.csproj" />
+  </ItemGroup>
+
 </Project>
