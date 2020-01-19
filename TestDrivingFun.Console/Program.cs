@@ -18,7 +18,7 @@ namespace TestDrivingFun.Console
                 new CreateBoardAccepted(sizeOfSurface, sizeOfSurface, coordinates.Take(10).Select(c=>new Herbivore(c.X,c.Y, "asd")), coordinates.Skip(10).Select(c=>new Carnivore(c.X,c.Y, "isaac")), "none", "none", DateTime.Now)
             };
             var surface = new Surface(surfaceEvents, rnd);
-            
+
             int numberOfHerbivores = 10;
             for (int i = 0; i < numberOfHerbivores; i++)
             {
@@ -52,7 +52,7 @@ namespace TestDrivingFun.Console
                 var y = generator.Next(max);
                 if (!retVal.Exists(c => c.X == x && c.Y == y))
                 {
-                    retVal.Add(new Coordinate(x,y));
+                    retVal.Add(new Coordinate(x, y));
                     number--;
                 }
             }
@@ -69,10 +69,10 @@ namespace TestDrivingFun.Console
                 System.Console.WriteLine($"Current Move is: {currentMove}");
                 var surface = new Surface(surfaceEvents, rnd);
                 toScreen.Output(surface);
-               Task.Delay(TimeSpan.FromMilliseconds(500)).GetAwaiter().GetResult();
-               currentMove++;
+                Task.Delay(TimeSpan.FromMilliseconds(500)).GetAwaiter().GetResult();
+                currentMove++;
             }
-            
+
         }
 
         private static Surface AddCarnivore(List<Event> surfaceEvents, Random rnd, int sizeOfSurface, int i)
@@ -124,26 +124,26 @@ namespace TestDrivingFun.Console
                     switch (surface.Cells[i, j])
                     {
                         case Surface.CellType.Default:
-                        {
-                            System.Console.ForegroundColor = ConsoleColor.DarkGray;
-                            System.Console.Write("#");
-                            break;
-                        }
+                            {
+                                System.Console.ForegroundColor = ConsoleColor.DarkGray;
+                                System.Console.Write("#");
+                                break;
+                            }
 
                         case Surface.CellType.Herbivore:
-                        {
-                            System.Console.ForegroundColor = ConsoleColor.Green;
-                            System.Console.Write("H");
-                            break;
+                            {
+                                System.Console.ForegroundColor = ConsoleColor.Green;
+                                System.Console.Write("H");
+                                break;
                             }
 
                         case Surface.CellType.Carnivore:
-                        {
-                            System.Console.ForegroundColor = ConsoleColor.Red;
-                            System.Console.Write("C");
-                            break;
-                        }
-                    }   
+                            {
+                                System.Console.ForegroundColor = ConsoleColor.Red;
+                                System.Console.Write("C");
+                                break;
+                            }
+                    }
                 }
                 System.Console.Write("\r\n");
             }

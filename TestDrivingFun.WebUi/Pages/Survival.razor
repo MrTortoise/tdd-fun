@@ -58,7 +58,7 @@
 
     void Start()
     {
-        game = new SurvivalGame(rnd);
+        game = new SurvivalGame(Guid.NewGuid().ToString(), rnd, new InMemoryEventStore());
         game.CreateDefaultGame();
         gameActive = true;
     }

@@ -7,15 +7,22 @@ namespace TestDrivingFun.Engine
 {
     public class SurvivalGame
     {
+        private readonly string _gameId;
         private readonly Random _rnd;
-        private List<Event> _events;
+        private readonly IEventStore _eventStore;
         private Surface _surface;
 
-        public SurvivalGame(Random rnd)
+        public string GetStreamId()
         {
+            return "game-" + _gameId;
+        }
+
+        public SurvivalGame(string gameId, Random rnd, IEventStore eventStore)
+        {
+            _gameId = gameId;
             _rnd = rnd;
-            _events = new List<Event>();
-            _surface = new Surface(_events, _rnd);
+            _eventStore = eventStore;
+            _surface = new Surface(_eventStore.ReadStream(GetStreamId()), _rnd);
         }
 
         public void CreateDefaultGame()
@@ -28,49 +35,53 @@ namespace TestDrivingFun.Engine
                 createCarnivores.Add(new Carnivore(19, i, "c" + i));
             }
 
-            
-            for (int i = 1; i < 11; i++)
-            {
-              
-            }
 
             CreateNewGame(20, createHerbivores, createCarnivores);
         }
 
         public void CreateNewGame(int size, IEnumerable<Herbivore> herbivores, IEnumerable<Carnivore> carnivores)
         {
-            _events = new List<Event>();
             var herbivoreList = herbivores.ToList();
             var carnivoreList = carnivores.ToList();
-            _events.AddRange(new Surface(new List<Event>(), _rnd).Handle(new CreateBoard(size, size, herbivoreList, carnivoreList, "createBoard")));
+            
+            var events  = new Surface(_eventStore.ReadStream(GetStreamId()), _rnd)
+                .Handle(new CreateBoard(size, size, herbivoreList, carnivoreList, "createBoard"));
+
+            _eventStore.WriteEVents(GetStreamId(), events);
 
             foreach (var herbivore in herbivoreList)
             {
-                _surface = new Surface(_events, _rnd);
-                _events.AddRange(_surface.Handle(new CreateHerbivore(herbivore, herbivore.Id, herbivore.Id)));
+                _surface = new Surface(_eventStore.ReadStream(GetStreamId()), _rnd);
+                _eventStore.WriteEVents(GetStreamId(), _surface.Handle(new CreateHerbivore(herbivore, herbivore.Id, herbivore.Id)));
             }
 
             foreach (var carnivore in carnivoreList)
             {
-                _surface = new Surface(_events, _rnd);
-                _events.AddRange(_surface.Handle(new CreateCarnivore(carnivore, carnivore.Id, carnivore.Id)));
+                _surface = new Surface(_eventStore.ReadStream(GetStreamId()), _rnd);
+                _eventStore.WriteEVents(GetStreamId(), _surface.Handle(new CreateCarnivore(carnivore, carnivore.Id, carnivore.Id)));
             }
 
-            _surface = new Surface(_events, _rnd);
+            _surface = new Surface(_eventStore.ReadStream(GetStreamId()), _rnd);
         }
 
         public void Bump()
         {
             var id = Guid.NewGuid().ToString();
-            _events.AddRange(_surface.Handle(new BumpGame(id, id, id, DateTime.Now)));
+            _eventStore.WriteEVents(GetStreamId(), _surface.Handle(new BumpGame(id, id, id, DateTime.Now)));
 
-            _surface = new Surface(_events, _rnd);
+            _surface = new Surface(_eventStore.ReadStream(GetStreamId()), _rnd);
 
 
         }
 
         public int Size => _surface.Columns;
         public Surface.CellType[,] Cells => _surface.Cells;
+    }
+
+    public interface IEventStore
+    {
+        IEnumerable<Event> ReadStream(string getStreamId);
+        void WriteEVents(string getStreamId, IEnumerable<Event> events);
     }
 
     public class BumpGame : Command
