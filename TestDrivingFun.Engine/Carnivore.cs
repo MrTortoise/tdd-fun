@@ -34,22 +34,32 @@ namespace TestDrivingFun.Engine
             {
                 return Event.None;
             }
-            var move = PickMove(validMoves, rnd);
-
-            return new CarnivoreMoved(this, move, cause);
+            return PickMove(validMoves, rnd, board, cause);
         }
 
-        private Coordinate PickMove(IEnumerable<Coordinate> validMoves, Random rnd)
+        private Event PickMove(IEnumerable<Coordinate> validMoves, Random rnd, Surface.CellType[,] board, Message cause)
         {
             var coordinates = validMoves.ToList();
+
+            var herbivoresToEat = coordinates.Where(m =>
+            {
+                var cellType = board[m.X, m.Y];
+                return cellType == Surface.CellType.Herbivore;
+            }).ToList();
+            if (herbivoresToEat.Any())
+            {
+                var randomHerbivore = rnd.Next(0, herbivoresToEat.Count());
+                return new CarnivoreAteHerbivore(this, herbivoresToEat[randomHerbivore], cause);
+            }
+
             var randomMove = rnd.Next(0, coordinates.Count);
-            return coordinates[randomMove];
+            return new CarnivoreMoved(this, coordinates[randomMove], cause);
         }
 
         private IEnumerable<Coordinate> GetValidMoves(IEnumerable<Coordinate> possibleMoves, Surface.CellType[,] board)
         {
             return possibleMoves.Where(
-                possibleMove => board[possibleMove.X, possibleMove.Y] == Surface.CellType.Default);
+                possibleMove => board[possibleMove.X, possibleMove.Y] != Surface.CellType.Carnivore);
         }
 
       

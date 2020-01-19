@@ -19,7 +19,8 @@ namespace TestDrivingFun.Engine
             IApply<CreateCarnivoreAccepted>,
             IApply<CreatePlantAccepted>,
             IApply<CarnivoreMoved>,
-            IApply<HerbivoreMoved>
+            IApply<HerbivoreMoved>,
+            IApply<CarnivoreAteHerbivore>
         {
             public CellType[,] Cells { get; private set; } = new CellType[0, 0];
 
@@ -76,6 +77,17 @@ namespace TestDrivingFun.Engine
 
                 var carnivore = Herbivores[@event.HerbivoreId];
                 Herbivores[@event.HerbivoreId].SetPosition(@event.NewPosition);
+            }
+
+            public void Apply(CarnivoreAteHerbivore @event)
+            {
+                var carnivore = Carnivores[@event.CarnivoreId];
+                var herbivore = Herbivores.Values.Single(h => h.X == @event.NewPosition.X && h.Y == @event.NewPosition.Y);
+
+                Cells[carnivore.X, carnivore.Y] = CellType.Default;
+                carnivore.SetPosition(herbivore);
+                Herbivores.Remove(herbivore.Id);
+                Cells[herbivore.X, herbivore.Y] = CellType.Carnivore;
             }
         }
 
