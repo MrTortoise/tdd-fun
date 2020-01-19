@@ -17,7 +17,7 @@ namespace TestDrivingFun.Console
             {
                 new CreateBoardAccepted(sizeOfSurface, sizeOfSurface, coordinates.Take(10).Select(c=>new Herbivore(c.X,c.Y, "asd")), coordinates.Skip(10).Select(c=>new Carnivore(c.X,c.Y, "isaac")), "none", "none", DateTime.Now)
             };
-            var surface = new Surface(surfaceEvents);
+            var surface = new Surface(surfaceEvents, rnd);
             
             int numberOfHerbivores = 10;
             for (int i = 0; i < numberOfHerbivores; i++)
@@ -35,7 +35,7 @@ namespace TestDrivingFun.Console
             toScreen.Output(surface);
 
 
-            StartSimulation(surfaceEvents, toScreen);
+            StartSimulation(surfaceEvents, toScreen, rnd);
         }
 
         private static List<IHaveCoordinates> BuildUniqueCoordinates(int number, Random generator, int max)
@@ -60,14 +60,14 @@ namespace TestDrivingFun.Console
             return retVal;
         }
 
-        private static void StartSimulation(List<Event> surfaceEvents, SurfaceToConsoleAdapter toScreen)
+        private static void StartSimulation(List<Event> surfaceEvents, SurfaceToConsoleAdapter toScreen, Random rnd)
         {
             int currentMove = 0;
             while (true)
             {
                 System.Console.Clear();
                 System.Console.WriteLine($"Current Move is: {currentMove}");
-                var surface = new Surface(surfaceEvents);
+                var surface = new Surface(surfaceEvents, rnd);
                 toScreen.Output(surface);
                Task.Delay(TimeSpan.FromMilliseconds(500)).GetAwaiter().GetResult();
                currentMove++;
@@ -78,12 +78,12 @@ namespace TestDrivingFun.Console
         private static Surface AddCarnivore(List<Event> surfaceEvents, Random rnd, int sizeOfSurface, int i)
         {
             Surface surface;
-            surface = new Surface(surfaceEvents);
+            surface = new Surface(surfaceEvents, rnd);
             var x = rnd.Next(sizeOfSurface);
             var y = rnd.Next(sizeOfSurface);
             try
             {
-                var events = surface.Handle(new CreateCarnivore(x, y, "createCarnivore-" + i));
+                var events = surface.Handle(new CreateCarnivore("testivore", x, y, "createCarnivore-" + i));
                 surfaceEvents.AddRange(events);
                 return surface;
             }
@@ -96,12 +96,12 @@ namespace TestDrivingFun.Console
         private static Surface AddHerbivore(List<Event> surfaceEvents, Random rnd, int sizeOfsurface, int i)
         {
             Surface surface;
-            surface = new Surface(surfaceEvents);
+            surface = new Surface(surfaceEvents, rnd);
             var x = rnd.Next(sizeOfsurface);
             var y = rnd.Next(sizeOfsurface);
             try
             {
-                var events = surface.Handle(new CreateHerbivore(x, y, "createHerbivore-" + i));
+                var events = surface.Handle(new CreateHerbivore("testivore", x, y, "createHerbivore-" + i));
                 surfaceEvents.AddRange(events);
                 return surface;
             }

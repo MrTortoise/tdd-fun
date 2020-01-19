@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 
 namespace TestDrivingFun.Engine
 {
@@ -8,6 +9,7 @@ namespace TestDrivingFun.Engine
         {
             return $"{type.FullName}-{Guid.NewGuid()}";
         }
+        [JsonConstructor]
         public Event(string id, string causationId, string correlationId, DateTime createdOn) : base(id, causationId, correlationId, createdOn)
         {
         }

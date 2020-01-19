@@ -4,20 +4,36 @@ using System.Linq;
 
 namespace TestDrivingFun.Engine
 {
-    public class Surface : IAggregate, IHandle<CreateBoard>, IHandle<CreateHerbivore>, IHandle<CreateCarnivore>, IHandle<CreatePlants>
+    public class Surface : IAggregate,
+        IHandle<CreateBoard>,
+        IHandle<CreateHerbivore>,
+        IHandle<CreateCarnivore>,
+        IHandle<CreatePlants>,
+        IHandle<BumpGame>
     {
-        private class SurfaceState : IApply<CreateBoardAccepted>, IApply<CreateHerbivoreAccepted>, IApply<CreateCarnivoreAccepted>, IApply<CreatePlantAccepted>
+        private readonly Random _random;
+
+        private class SurfaceState :
+            IApply<CreateBoardAccepted>,
+            IApply<CreateHerbivoreAccepted>,
+            IApply<CreateCarnivoreAccepted>,
+            IApply<CreatePlantAccepted>,
+            IApply<CarnivoreMoved>,
+            IApply<CarnivoreDidNotMove>
         {
-            public CellType[,] Cells { get; private set; }
+            public CellType[,] Cells { get; private set; } = new CellType[0, 0];
 
             public int Columns { get; private set; }
 
             public int Rows { get; private set; }
 
+            public Dictionary<string, Carnivore> Carnivores { get; } = new Dictionary<string, Carnivore>();
+            public Dictionary<string, Herbivore> Herbivores { get; } = new Dictionary<string, Herbivore>();
+
             public void Apply(CreateBoardAccepted @event)
             {
-                Rows = @event.Y;
-                Columns = @event.X;
+                Rows = @event.X;
+                Columns = @event.Y;
                 Cells = new CellType[@event.X, @event.Y];
                 for (var j = 0; j < @event.Y; j++)
                 {
@@ -30,16 +46,32 @@ namespace TestDrivingFun.Engine
             public void Apply(CreateHerbivoreAccepted @event)
             {
                 Cells[@event.X, @event.Y] = CellType.Herbivore;
+                Herbivores.Add(@event.HerbivoreId, new Herbivore(@event.X, @event.Y, @event.HerbivoreId));
             }
 
             public void Apply(CreateCarnivoreAccepted @event)
             {
                 Cells[@event.X, @event.Y] = CellType.Carnivore;
+                Carnivores.Add(@event.CarnivoreId, new Carnivore(@event.X, @event.Y, @event.CarnivoreId));
             }
 
             public void Apply(CreatePlantAccepted @event)
             {
                 Cells[@event.X, @event.Y] = CellType.Plants;
+            }
+
+            public void Apply(CarnivoreMoved @event)
+            {
+                Cells[@event.OldPosition.X, @event.OldPosition.Y] = CellType.Default;
+                Cells[@event.NewPosition.X, @event.NewPosition.Y] = CellType.Carnivore;
+
+                var carnivore = Carnivores[@event.CarnivoreId];
+                Carnivores[@event.CarnivoreId].SetPosition(@event.NewPosition);
+            }
+
+            public void Apply(CarnivoreDidNotMove @event)
+            {
+                
             }
         }
 
@@ -60,8 +92,9 @@ namespace TestDrivingFun.Engine
         public int Columns => _state.Columns;
         public CellType[,] Cells => _state.Cells;
 
-        public Surface(IEnumerable<Event> events)
+        public Surface(IEnumerable<Event> events, Random random)
         {
+            _random = random;
             _state = new SurfaceState();
             foreach (var e in events)
             {
@@ -99,7 +132,7 @@ namespace TestDrivingFun.Engine
             CheckPositionIsDefault(command);
             return new List<CreateHerbivoreAccepted>
             {
-                new CreateHerbivoreAccepted(command.X, command.Y, command)
+                new CreateHerbivoreAccepted(command.HerbivoreId, command.X, command.Y, command)
             };
         }
 
@@ -109,7 +142,7 @@ namespace TestDrivingFun.Engine
             CheckPositionIsDefault(command);
             return new List<CreateCarnivoreAccepted>
             {
-                new CreateCarnivoreAccepted(command.X, command.Y, command)
+                new CreateCarnivoreAccepted(command.CarnivoreId, command.X, command.Y, command)
             };
         }
 
@@ -120,6 +153,16 @@ namespace TestDrivingFun.Engine
             {
                 new CreatePlantAccepted(command.X, command.Y, command)
             };
+        }
+
+        public IEnumerable<Event> Handle(BumpGame command)
+        {
+            foreach (var carnivore in _state.Carnivores.Values)
+            {
+                var @event = carnivore.Move(_state.Cells, Rows, Columns, _random, command);
+                _state.Apply((dynamic)@event);
+                yield return @event;
+            }
         }
 
         private void CheckPositionIsDefault(IHaveCoordinates toCheck)

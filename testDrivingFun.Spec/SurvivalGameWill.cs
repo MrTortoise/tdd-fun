@@ -11,33 +11,19 @@ namespace testDrivingFun.Spec
         [Fact]
         public void CreateAGameWithABoardAndStuff()
         {
-            var ut = new SurvivalGame();
-            var createHerbivores = new List<Herbivore>()
+            var ut = new SurvivalGame(new Random());
+            var createHerbivores = new List<Herbivore>();
+            for (int i = 1; i <= 10; i++)
             {
-                new Herbivore(0,1,  String.Empty),
-                new Herbivore(0,2, String.Empty),
-                new Herbivore(0,3, String.Empty),
-                new Herbivore(0,4, String.Empty),
-                new Herbivore(0,5, String.Empty),
-                new Herbivore(0,6, String.Empty),
-                new Herbivore(0,7, String.Empty),
-                new Herbivore(0,8, String.Empty),
-                new Herbivore(0,9, String.Empty),
-                new Herbivore(0,10, String.Empty)
-            };
-            var createCarnivores = new List<Carnivore>()
+                createHerbivores.Add(new Herbivore(0, i, "h" + i));
+            }
+
+            var createCarnivores = new List<Carnivore>();
+            for (int i = 1; i <= 10; i++)
             {
-                new Carnivore(19, 1, String.Empty),
-                new Carnivore(19, 2, String.Empty),
-                new Carnivore(19, 3, String.Empty),
-                new Carnivore(19, 4, String.Empty),
-                new Carnivore(19, 5, String.Empty),
-                new Carnivore(19, 6, String.Empty),
-                new Carnivore(19, 7, String.Empty),
-                new Carnivore(19, 8, String.Empty),
-                new Carnivore(19, 9, String.Empty),
-                new Carnivore(19, 10, String.Empty)
-            };
+                createCarnivores.Add(new Carnivore(19, i, "c" + i));
+            }
+
             ut.CreateNewGame(20, createHerbivores, createCarnivores);
         }
     }

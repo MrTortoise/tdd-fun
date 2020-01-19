@@ -6,9 +6,11 @@ namespace TestDrivingFun.Engine
     {
         public int X { get; }
         public int Y { get; }
+        public string CarnivoreId { get; }
 
-        public CreateCarnivore(int x, int y, string id) : base(id, id, id, DateTime.Now)
+        public CreateCarnivore(string carnivoreId, int x, int y, string id) : base(id, id, id, DateTime.Now)
         {
+            CarnivoreId = carnivoreId;
             X = x;
             Y = y;
         }
@@ -17,6 +19,7 @@ namespace TestDrivingFun.Engine
         {
             X = carnivore.X;
             Y = carnivore.Y;
+            CarnivoreId = carnivore.Id;
         }
     }
 }

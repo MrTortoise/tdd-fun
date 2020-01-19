@@ -27,7 +27,7 @@ namespace testDrivingFun.Spec
                     Message.CorrelationId, Message.CreatedOn)
             };
 
-            var results = Execute(given, when, then, events => new Surface(events));
+            var results = Execute(given, when, then, events => new Surface(events, new Random()));
             var e = (CreateBoardAccepted) results[0];
             Assert.Equal(20, e.X);
             Assert.Equal(20, e.Y);
@@ -45,13 +45,13 @@ namespace testDrivingFun.Spec
                     Message.CorrelationId, Message.CreatedOn)
             };
 
-            var when = new CreateCarnivore(2, 3, "woop2");
+            var when = new CreateCarnivore("testivore", 2, 3, "woop2");
             var then = new List<Event>
             {
-                new CreateCarnivoreAccepted(2, 3, Message)
+                new CreateCarnivoreAccepted("testivore",2, 3, Message)
             };
 
-            var results = Execute(given, when, then, events => new Surface(events));
+            var results = Execute(given, when, then, events => new Surface(events, new Random()));
 
             var carnivores = results.Select(r => (CreateCarnivoreAccepted) r).ToList();
             foreach (var carnivore in carnivores)
@@ -65,12 +65,12 @@ namespace testDrivingFun.Spec
             {
                 new CreateBoardAccepted(20, 20, new List<Herbivore>(), new List<Carnivore>(), Message.CausationId,
                     Message.CorrelationId, Message.CreatedOn),
-                new CreateCarnivoreAccepted(2, 3, Message)
+                new CreateCarnivoreAccepted("testivore",2, 3, Message)
             };
 
-            var when = new CreateCarnivore(2, 3, "woop2");
+            var when = new CreateCarnivore("testivore",2, 3, "woop2");
 
-            Execute(given, when, typeof(Surface.PositionAlreadyTakenException), events => new Surface(events));
+            Execute(given, when, typeof(Surface.PositionAlreadyTakenException), events => new Surface(events, new Random()));
         }
 
         [Fact]
@@ -82,13 +82,13 @@ namespace testDrivingFun.Spec
                     Message.CorrelationId, Message.CreatedOn)
             };
 
-            var when = new CreateHerbivore(2, 3, "woop2");
+            var when = new CreateHerbivore("testivore", 2, 3, "woop2");
             var then = new List<Event>
             {
-                new CreateHerbivoreAccepted(2, 3, Message)
+                new CreateHerbivoreAccepted("testivore",2, 3, Message)
             };
 
-            var results = Execute(given, when, then, events => new Surface(events));
+            var results = Execute(given, when, then, events => new Surface(events, new Random()));
 
             var carnivores = results.Select(r => (CreateHerbivoreAccepted) r).ToList();
             foreach (var carnivore in carnivores)
@@ -102,12 +102,12 @@ namespace testDrivingFun.Spec
             {
                 new CreateBoardAccepted(20, 20, new List<Herbivore>(), new List<Carnivore>(), Message.CausationId,
                     Message.CorrelationId, Message.CreatedOn),
-                new CreateHerbivoreAccepted(2, 3, Message)
+                new CreateHerbivoreAccepted("testivore", 2, 3, Message)
             };
 
-            var when = new CreateHerbivore(2, 3, "woop2");
+            var when = new CreateHerbivore("testivore", 2, 3, "woop2");
 
-            Execute(given, when, typeof(Surface.PositionAlreadyTakenException), events => new Surface(events));
+            Execute(given, when, typeof(Surface.PositionAlreadyTakenException), events => new Surface(events, new Random()));
         }
 
         [Fact]
@@ -125,7 +125,7 @@ namespace testDrivingFun.Spec
                 new CreatePlantAccepted(2, 3, Message)
             };
 
-            var results = Execute(given, when, then, events => new Surface(events));
+            var results = Execute(given, when, then, events => new Surface(events, new Random()));
 
             var carnivores = results.Select(r => (CreatePlantAccepted) r).ToList();
             foreach (var carnivore in carnivores)
@@ -144,7 +144,7 @@ namespace testDrivingFun.Spec
 
             var when = new CreatePlants(2, 3, "woop2");
 
-            Execute(given, when, typeof(Surface.PositionAlreadyTakenException), events => new Surface(events));
+            Execute(given, when, typeof(Surface.PositionAlreadyTakenException), events => new Surface(events, new Random()));
         }
     }
 }

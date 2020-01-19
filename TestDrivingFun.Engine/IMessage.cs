@@ -4,6 +4,10 @@ namespace TestDrivingFun.Engine
 {
     public class Message
     {
+        public Message(string newId, Message cause) 
+            :this(newId, cause.Id, cause.CorrelationId, DateTime.Now)
+        {
+        }
         public Message(string id, string causationId, string correlationId, DateTime createdOn)
         {
             Id = id;

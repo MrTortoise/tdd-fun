@@ -14,38 +14,35 @@
     <div class="board">
         @for (int i = 0; i < game.Size; i++)
         {
-        <div class="column">
-            @for (int j = 0; j < game.Size; j++)
-            {
-                @switch (game.Cells[i, j])
+            <div class="column">
+                @for (int j = 0; j < game.Size; j++)
                 {
-                    case Surface.CellType.Default:
-                        {
-                            <div class="cell">#</div>
-                            break;
-                        }
-                    case Surface.CellType.Herbivore:
-                        {
-                            <img class="cell" src="images/ank.png" />
-                            break;
-                        }
-                    case Surface.CellType.Carnivore:
+                    @switch (game.Cells[i, j])
                     {
-                        <img class="cell" src="/images/rex.svg" />
-                        break;
-                    }
-                }
-
-                                }
-        </div>
+                        case Surface.CellType.Default:
+                            {
+                                <div class="empty-cell"></div>
+                                break;
+                            }
+                        case Surface.CellType.Herbivore:
+                            {
+                                <img class="cell" src="images/ank.png" />
+                                break;
+                            }
+                        case Surface.CellType.Carnivore:
+                            {
+                                <img class="cell" src="/images/rex.svg" />
+                                break;
+                            }
+                    }}
+            </div>
         }
 
     </div>
 
+    <button class="btn btn-primary" @onclick="Bump">Bump</button>
+
 }
-
-
-
 
 
 <img class="cell" src="images/ank.png" />
@@ -53,6 +50,7 @@
 <img class="cell" src="/images/steg.svg" />
 
 @code {
+    Random rnd = new Random();
     string Column;
     bool gameActive = false;
 
@@ -60,8 +58,13 @@
 
     void Start()
     {
-        game = new SurvivalGame();
+        game = new SurvivalGame(rnd);
         game.CreateDefaultGame();
         gameActive = true;
+    }
+
+    void Bump()
+    {
+        game.Bump();
     }
 }
