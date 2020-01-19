@@ -9,18 +9,17 @@ namespace testDrivingFun.Spec
 {
     public class CreateSurvivalGameWill
     {
-        private SurvivalGame _ut;
-        private List<Herbivore> _createHerbivores;
-        private InMemoryEventStore _eventStore;
+        private readonly SurvivalGame _ut;
+        private readonly MockInMemoryEventStore _eventStore;
 
         public CreateSurvivalGameWill()
         {
-            _eventStore = new InMemoryEventStore();
+            _eventStore = new MockInMemoryEventStore();
             _ut = new SurvivalGame(nameof(CreateSurvivalGameWill), new Random(), _eventStore);
-            _createHerbivores = new List<Herbivore>();
+            var createHerbivores = new List<Herbivore>();
             for (int i = 1; i <= 10; i++)
             {
-                _createHerbivores.Add(new Herbivore(0, i, "h" + i));
+                createHerbivores.Add(new Herbivore(0, i, "h" + i));
             }
 
             var createCarnivores = new List<Carnivore>();
@@ -29,7 +28,7 @@ namespace testDrivingFun.Spec
                 createCarnivores.Add(new Carnivore(19, i, "c" + i));
             }
 
-            _ut.CreateNewGame(20, _createHerbivores, createCarnivores);
+            _ut.CreateNewGame(20, createHerbivores, createCarnivores);
         }
 
         [Fact]
@@ -41,9 +40,17 @@ namespace testDrivingFun.Spec
         }
 
         [Fact]
-        public void HAveTheRightNumberOfHerbivores()
+        public void HaveTheRightNumberOfHerbivores()
         {
-            
+            var eventStream = _eventStore.Events.Values.First();
+            Assert.Equal(10, eventStream.Count(e=>e.GetType().Name == typeof(CreateHerbivoreAccepted).Name));
+        }
+
+        [Fact]
+        public void HaveTheRightNumberOfCarnivores()
+        {
+            var eventStream = _eventStore.Events.Values.First();
+            Assert.Equal(10, eventStream.Count(e => e.GetType().Name == typeof(CreateCarnivoreAccepted).Name));
         }
     }
 }

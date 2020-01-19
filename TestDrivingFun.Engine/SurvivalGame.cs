@@ -70,8 +70,6 @@ namespace TestDrivingFun.Engine
             _eventStore.WriteEVents(GetStreamId(), _surface.Handle(new BumpGame(id, id, id, DateTime.Now)));
 
             _surface = new Surface(_eventStore.ReadStream(GetStreamId()), _rnd);
-
-
         }
 
         public int Size => _surface.Columns;

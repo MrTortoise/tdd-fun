@@ -7,7 +7,12 @@ using Newtonsoft.Json;
 
 namespace TestDrivingFun.Engine
 {
-    public class Carnivore : IHaveCoordinates
+    public interface IMove
+    {
+        Event Move(Surface.CellType[,] board, int numberOfRows, int numberOfColumns, Random rnd, Message cause);
+    }
+
+    public class Carnivore : IHaveCoordinates, IMove
     {
         public Carnivore(int x, int y, string id)
         {
@@ -23,11 +28,11 @@ namespace TestDrivingFun.Engine
 
         public Event Move(Surface.CellType[,] board, int numberOfRows, int numberOfColumns, Random rnd, Message cause)
         {
-            var possibleMoves = GetSurroundingCells(X, Y, 1, numberOfRows, numberOfColumns);
+            var possibleMoves = this.GetSurroundingCells(1, numberOfRows, numberOfColumns);
             var validMoves = GetValidMoves(possibleMoves, board).ToList();
             if (!validMoves.Any())
             {
-                return new CarnivoreDidNotMove(this, cause);
+                return Event.None;
             }
             var move = PickMove(validMoves, rnd);
 
@@ -47,49 +52,7 @@ namespace TestDrivingFun.Engine
                 possibleMove => board[possibleMove.X, possibleMove.Y] == Surface.CellType.Default);
         }
 
-        private IEnumerable<Coordinate> GetSurroundingCells(
-            int x,
-            int y,
-            int distance,
-            int numberOfRows,
-            int numberOfColumns)
-        {
-            var minX = x - distance;
-            var maxX = x + distance;
-            var minY = y - distance;
-            var maxY = y + distance;
-
-            if (minX < 0)
-            {
-                minX = 0;
-            }
-
-            if (minY < 0)
-            {
-                minY = 0;
-            }
-
-            if (maxX > numberOfColumns - 1)
-            {
-                maxX = numberOfColumns - 1;
-            }
-
-            if (maxY > numberOfRows - 1)
-            {
-                maxY = numberOfRows - 1;
-            }
-
-
-            for (var i = minX; i <= maxX; i++)
-            {
-                for (var j = minY; j <= maxY; j++)
-                {
-                    if (i == x && j == y) continue;
-
-                    yield return new Coordinate(i, j);
-                }
-            }
-        }
+      
 
 
         public class MoveOneSpaceRule : IMovementType

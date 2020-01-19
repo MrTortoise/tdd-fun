@@ -5,7 +5,7 @@ namespace TestDrivingFun.Engine
 {
     public class InMemoryEventStore : IEventStore
     {
-        private readonly Dictionary<string,List<Event>> _events = new Dictionary<string, List<Event>>();
+        protected readonly Dictionary<string,List<Event>> _events = new Dictionary<string, List<Event>>();
 
         public IEnumerable<Event> ReadStream(string streamName)
         {
@@ -27,5 +27,10 @@ namespace TestDrivingFun.Engine
                 _events.Add(streamName, new List<Event>());
             }
         }
+    }
+
+    public class MockInMemoryEventStore : InMemoryEventStore
+    {
+        public Dictionary<string, List<Event>> Events => _events;
     }
 }

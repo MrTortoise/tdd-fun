@@ -5,6 +5,7 @@ namespace TestDrivingFun.Engine
 {
     public class Event : Message
     {
+        public static Event None = new Event("none", "none", "none", DateTime.MinValue);
         public static string GetId(Type type)
         {
             return $"{type.FullName}-{Guid.NewGuid()}";

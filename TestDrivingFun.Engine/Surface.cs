@@ -19,7 +19,7 @@ namespace TestDrivingFun.Engine
             IApply<CreateCarnivoreAccepted>,
             IApply<CreatePlantAccepted>,
             IApply<CarnivoreMoved>,
-            IApply<CarnivoreDidNotMove>
+            IApply<HerbivoreMoved>
         {
             public CellType[,] Cells { get; private set; } = new CellType[0, 0];
 
@@ -69,9 +69,13 @@ namespace TestDrivingFun.Engine
                 Carnivores[@event.CarnivoreId].SetPosition(@event.NewPosition);
             }
 
-            public void Apply(CarnivoreDidNotMove @event)
+            public void Apply(HerbivoreMoved @event)
             {
-                
+                Cells[@event.OldPosition.X, @event.OldPosition.Y] = CellType.Default;
+                Cells[@event.NewPosition.X, @event.NewPosition.Y] = CellType.Herbivore;
+
+                var carnivore = Herbivores[@event.HerbivoreId];
+                Herbivores[@event.HerbivoreId].SetPosition(@event.NewPosition);
             }
         }
 
@@ -160,6 +164,21 @@ namespace TestDrivingFun.Engine
             foreach (var carnivore in _state.Carnivores.Values)
             {
                 var @event = carnivore.Move(_state.Cells, Rows, Columns, _random, command);
+                if (@event == Event.None)
+                {
+                    continue;
+                }
+                _state.Apply((dynamic)@event);
+                yield return @event;
+            }
+
+            foreach (var herbivore in _state.Herbivores.Values)
+            {
+                var @event = herbivore.Move(_state.Cells, Rows, Columns, _random, command);
+                if (@event == Event.None)
+                {
+                    continue;
+                }
                 _state.Apply((dynamic)@event);
                 yield return @event;
             }

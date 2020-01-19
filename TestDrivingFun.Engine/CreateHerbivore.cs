@@ -22,10 +22,4 @@ namespace TestDrivingFun.Engine
         public int Y { get; }
         public string HerbivoreId { get; }
     }
-
-    public interface IHaveCoordinates
-    {
-        int X { get; }
-        int Y { get; }
-    }
 }
