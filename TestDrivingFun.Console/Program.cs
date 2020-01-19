@@ -8,7 +8,7 @@ namespace TestDrivingFun.Console
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main(string[] _)
         {
             var sizeOfSurface = 20;
             var rnd = new Random(876);
@@ -87,7 +87,7 @@ namespace TestDrivingFun.Console
                 surfaceEvents.AddRange(events);
                 return surface;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return AddCarnivore(surfaceEvents, rnd, sizeOfSurface, i);
             }
@@ -105,7 +105,7 @@ namespace TestDrivingFun.Console
                 surfaceEvents.AddRange(events);
                 return surface;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return AddHerbivore(surfaceEvents, rnd, sizeOfsurface, i);
             }
