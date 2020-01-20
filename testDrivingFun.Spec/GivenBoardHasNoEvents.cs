@@ -119,10 +119,10 @@ namespace testDrivingFun.Spec
                     Message.CorrelationId, Message.CreatedOn)
             };
 
-            var when = new CreatePlants(2, 3, "woop2");
+            var when = new CreatePlants(2, 3, "test_plant",Message.Id);
             var then = new List<Event>
             {
-                new CreatePlantAccepted(2, 3, Message)
+                new CreatePlantAccepted("test_plant",2, 3, Message)
             };
 
             var results = Execute(given, when, then, events => new Surface(events, new Random()));
@@ -139,10 +139,10 @@ namespace testDrivingFun.Spec
             {
                 new CreateBoardAccepted(20, 20, new List<Herbivore>(), new List<Carnivore>(), Message.CausationId,
                     Message.CorrelationId, Message.CreatedOn),
-                new CreatePlantAccepted(2, 3, Message)
+                new CreatePlantAccepted("plantId",2, 3,Message)
             };
 
-            var when = new CreatePlants(2, 3, "woop2");
+            var when = new CreatePlants(2, 3, "plantId", Message.Id);
 
             Execute(given, when, typeof(Surface.PositionAlreadyTakenException), events => new Surface(events, new Random()));
         }

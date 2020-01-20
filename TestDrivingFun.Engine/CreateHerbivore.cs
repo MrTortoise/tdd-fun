@@ -1,9 +1,11 @@
 using System;
+using Newtonsoft.Json;
 
 namespace TestDrivingFun.Engine
 {
     public class CreateHerbivore : Command, IHaveCoordinates
     {
+        [JsonConstructor]
         public CreateHerbivore(string herbivoreId, int x, int y, string id) : base(id, id, id, DateTime.Now)
         {
             X = x;

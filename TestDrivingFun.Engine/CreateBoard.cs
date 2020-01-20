@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace TestDrivingFun.Engine
 {
@@ -11,6 +12,7 @@ namespace TestDrivingFun.Engine
         public IEnumerable<Herbivore> Herbivores { get; }
         public IEnumerable<Carnivore> Carnivores { get; }
 
+        [JsonConstructor]
         public CreateBoard(int x, int y, IEnumerable<Herbivore> herbivores, IEnumerable<Carnivore> carnivores,
             string id) : base(id, id, id, DateTime.Now)
         {

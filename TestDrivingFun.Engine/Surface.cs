@@ -65,8 +65,7 @@ namespace TestDrivingFun.Engine
             {
                 Cells[@event.OldPosition.X, @event.OldPosition.Y] = CellType.Default;
                 Cells[@event.NewPosition.X, @event.NewPosition.Y] = CellType.Carnivore;
-
-                var carnivore = Carnivores[@event.CarnivoreId];
+                
                 Carnivores[@event.CarnivoreId].SetPosition(@event.NewPosition);
             }
 
@@ -74,8 +73,7 @@ namespace TestDrivingFun.Engine
             {
                 Cells[@event.OldPosition.X, @event.OldPosition.Y] = CellType.Default;
                 Cells[@event.NewPosition.X, @event.NewPosition.Y] = CellType.Herbivore;
-
-                var carnivore = Herbivores[@event.HerbivoreId];
+                
                 Herbivores[@event.HerbivoreId].SetPosition(@event.NewPosition);
             }
 
@@ -167,7 +165,7 @@ namespace TestDrivingFun.Engine
             CheckPositionIsDefault(command);
             return new List<CreatePlantAccepted>
             {
-                new CreatePlantAccepted(command.X, command.Y, command)
+                new CreatePlantAccepted(command.PlantId,  command.X, command.Y, command)
             };
         }
 

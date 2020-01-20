@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace TestDrivingFun.Engine
 {
@@ -10,6 +11,7 @@ namespace TestDrivingFun.Engine
         public IEnumerable<Herbivore> Herbivores { get; }
         public IEnumerable<Carnivore> Carnivores { get; }
 
+        [JsonConstructor]
         public CreateBoardAccepted(int x, int y, IEnumerable<Herbivore> herbivores, IEnumerable<Carnivore> carnivores, string causationId,
             string correlationId, DateTime createdOn) : base(Event.GetId(typeof(CreateBoardAccepted)), causationId, correlationId, createdOn  )
         {

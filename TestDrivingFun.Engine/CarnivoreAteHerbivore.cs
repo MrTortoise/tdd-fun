@@ -5,6 +5,7 @@ namespace TestDrivingFun.Engine
 {
     public class CarnivoreAteHerbivore : Event
     {
+        [JsonConstructor]
         public CarnivoreAteHerbivore(string carnivoreId, Coordinate oldPosition, Coordinate newPosition, string id,
             string causationId, string correlationId, DateTime createdOn) : base(id, causationId, correlationId,
             createdOn)

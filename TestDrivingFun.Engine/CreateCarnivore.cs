@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 
 namespace TestDrivingFun.Engine
 {
@@ -8,6 +9,7 @@ namespace TestDrivingFun.Engine
         public int Y { get; }
         public string CarnivoreId { get; }
 
+        [JsonConstructor]
         public CreateCarnivore(string carnivoreId, int x, int y, string id) : base(id, id, id, DateTime.Now)
         {
             CarnivoreId = carnivoreId;

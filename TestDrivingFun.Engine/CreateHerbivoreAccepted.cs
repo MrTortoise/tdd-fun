@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 
 namespace TestDrivingFun.Engine
 {
@@ -8,6 +9,7 @@ namespace TestDrivingFun.Engine
         public int Y { get; }
         public string HerbivoreId { get; }
 
+        [JsonConstructor]
         public CreateHerbivoreAccepted(string herbivoreId, int x, int y, string id, string causationId,
             string correlationId, DateTime createdOn) : base(id, causationId, correlationId, createdOn)
         {

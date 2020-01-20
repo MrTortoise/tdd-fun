@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security;
 using System.Text.Json.Serialization;
-using Newtonsoft.Json;
 
 namespace TestDrivingFun.Engine
 {
@@ -24,7 +23,6 @@ namespace TestDrivingFun.Engine
         public int X { get; set; }
         public int Y { get; set; }
         public string Id { get; }
-        public IMovementType MovementType { get; } = new MoveOneSpaceRule();
 
         public Event Move(Surface.CellType[,] board, int numberOfRows, int numberOfColumns, Random rnd, Message cause)
         {
@@ -62,55 +60,11 @@ namespace TestDrivingFun.Engine
                 possibleMove => board[possibleMove.X, possibleMove.Y] != Surface.CellType.Carnivore);
         }
 
-      
-
-
-        public class MoveOneSpaceRule : IMovementType
-        {
-        }
-
-        public interface IMovementType
-        {
-        }
 
         public void SetPosition(IHaveCoordinates newPosition)
         {
             X = newPosition.X;
             Y = newPosition.Y;
         }
-    }
-
-    public class CarnivoreDidNotMove : Event
-    {
-        public CarnivoreDidNotMove(Carnivore carnivore, Message cause) : base(GetId(typeof(CarnivoreDidNotMove)), cause)
-        {
-            CarnivoreId = carnivore.Id;
-        }
-
-        public string CarnivoreId { get; set; }
-    }
-
-    public class CarnivoreMoved : Event
-    {
-        public CarnivoreMoved(Carnivore carnivore, Coordinate move, Message cause) : base(GetId(typeof(CarnivoreMoved)),
-            cause)
-        {
-            OldPosition = new Coordinate(carnivore.X, carnivore.Y);
-            NewPosition = move;
-            CarnivoreId = carnivore.Id;
-        }
-
-        [JsonConstructor]
-        public CarnivoreMoved(string id, string carnivoreId, Coordinate oldPosition, Coordinate newPosition, string causationId,
-            string correlationId, DateTime createdOn) : base(id, causationId, correlationId, createdOn)
-        {
-            CarnivoreId = carnivoreId;
-            OldPosition = oldPosition;
-            NewPosition = newPosition;
-        }
-
-        public string CarnivoreId { get; set; }
-        public Coordinate OldPosition { get; set; }
-        public Coordinate NewPosition { get; set; }
     }
 }
