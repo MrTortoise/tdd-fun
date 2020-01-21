@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Newtonsoft.Json;
 
 namespace TestDrivingFun.Engine
 {
-
+    [DebuggerDisplay("{X},{Y}")]
     public class Coordinate : IHaveCoordinates
     {
         [JsonConstructor]
