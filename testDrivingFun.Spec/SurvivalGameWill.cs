@@ -25,7 +25,7 @@ namespace testDrivingFun.Spec
             var createCarnivores = new List<Carnivore>();
             for (int i = 1; i <= 10; i++)
             {
-                createCarnivores.Add(new Carnivore(19, i, "c" + i));
+                createCarnivores.Add(new Carnivore(19, i, "c" + i, 10));
             }
 
             _ut.CreateNewGame(20, createHerbivores, createCarnivores);

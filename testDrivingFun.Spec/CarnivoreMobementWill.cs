@@ -17,7 +17,7 @@ namespace testDrivingFun.Spec
         {
             _eventStore = new MockInMemoryEventStore();
             _ut = new SurvivalGame(nameof(CreateSurvivalGameWill), new Random(), _eventStore);
-            var createCarnivores = new List<Carnivore> { new Carnivore(10, 10, "c1") };
+            var createCarnivores = new List<Carnivore> { new Carnivore(10, 10, "c1", 10) };
             _ut.CreateNewGame(20, new List<Herbivore>(), createCarnivores);
 
             _ut.Bump();
@@ -44,7 +44,7 @@ namespace testDrivingFun.Spec
             var carnivoreId = "c1";
             var herbivoreId = "h1";
             _ut = new SurvivalGame(nameof(CreateSurvivalGameWill), new Random(), _eventStore);
-            var createCarnivore = new List<Carnivore> { new Carnivore(10, 10, carnivoreId) };
+            var createCarnivore = new List<Carnivore> { new Carnivore(10, 10, carnivoreId, 10) };
             var createHerbivore = new List<Herbivore> { new Herbivore(10, 9, herbivoreId) };
             _ut.CreateNewGame(20, createHerbivore, createCarnivore);
 
@@ -65,13 +65,15 @@ namespace testDrivingFun.Spec
         public void CarnivoresMoveApartFromEachOther()
         {
             _eventStore = new MockInMemoryEventStore();
-            const string C1 = "c1";
-            const string C2 = "C2";
+
+            const string c1 = "c1";
+            const string c2 = "C2";
+
             _ut = new SurvivalGame(nameof(CreateSurvivalGameWill), new Random(), _eventStore);
             var createCarnivore = new List<Carnivore>
                 {
-                    new Carnivore(10, 10, C1),
-                    new Carnivore(10, 9, C2)
+                    new Carnivore(10, 10, c1, 10),
+                    new Carnivore(10, 9, c2, 10)
                 };
             _ut.CreateNewGame(20, new List<Herbivore>(), createCarnivore);
 
@@ -94,13 +96,15 @@ namespace testDrivingFun.Spec
         public void CarnivoresMoveApartFromEachOther_UnlessMoveInvalid()
         {
             _eventStore = new MockInMemoryEventStore();
-            const string C1 = "c1";
-            const string C2 = "C2";
+
+            const string c1 = "c1";
+            const string c2 = "C2";
+
             _ut = new SurvivalGame(nameof(CreateSurvivalGameWill), new Random(), _eventStore);
             var createCarnivore = new List<Carnivore>
             {
-                new Carnivore(0, 0, C1),
-                new Carnivore(0, 1, C2)
+                new Carnivore(0, 0, c1, 10),
+                new Carnivore(0, 1, c2, 10)
             };
             _ut.CreateNewGame(20, new List<Herbivore>(), createCarnivore);
 

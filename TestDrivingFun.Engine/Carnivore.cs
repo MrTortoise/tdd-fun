@@ -13,16 +13,18 @@ namespace TestDrivingFun.Engine
 
     public class Carnivore : IHaveCoordinates, IMove
     {
-        public Carnivore(int x, int y, string id)
+        public Carnivore(int x, int y, string id, int movesUntilDeath)
         {
             X = x;
             Y = y;
             Id = id;
+            MovesUntilDeath = movesUntilDeath;
         }
 
         public int X { get; set; }
         public int Y { get; set; }
         public string Id { get; }
+        public int MovesUntilDeath { get; set; }
 
         public Event Move(Surface.CellType[,] board, int numberOfRows, int numberOfColumns, Random rnd, Message cause)
         {
@@ -45,6 +47,11 @@ namespace TestDrivingFun.Engine
             {
                 var randomHerbivore = rnd.Next(0, herbivoresToEat.Count());
                 return new CarnivoreAteHerbivore(this, herbivoresToEat[randomHerbivore], cause);
+            }
+
+            if (MovesUntilDeath == 1)
+            {
+                return new CarnivoreDied(Id, cause);
             }
 
             var carnivoresToRunFrom = coordinates.Where(m =>
@@ -86,10 +93,11 @@ namespace TestDrivingFun.Engine
         }
 
 
-        public void SetPosition(IHaveCoordinates newPosition)
+        public void MoveTo(IHaveCoordinates newPosition)
         {
             X = newPosition.X;
             Y = newPosition.Y;
+            MovesUntilDeath--;
         }
     }
 }

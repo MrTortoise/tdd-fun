@@ -27,16 +27,38 @@ namespace TestDrivingFun.Engine
 
         public void CreateDefaultGame()
         {
+            int gameSize = 20;
+            var spaces = new List<IHaveCoordinates>(gameSize * gameSize);
+            for (int i = 0; i < gameSize; i++)
+            {
+                for (int j = 0; j < gameSize; j++)
+                {
+                    spaces.Add(new Coordinate(i,j));
+                }
+            }
+
+
             var createHerbivores = new List<Herbivore>();
             var createCarnivores = new List<Carnivore>();
+
             for (int i = 1; i < 11; i++)
             {
-                createHerbivores.Add(new Herbivore(0, i, "h" + i));
-                createCarnivores.Add(new Carnivore(19, i, "c" + i));
+                var herbCoord = GetRandomSpace(spaces);
+                createHerbivores.Add(new Herbivore(herbCoord.X, herbCoord.Y, "h" + i));
+                var carnCoord = GetRandomSpace(spaces);
+                createCarnivores.Add(new Carnivore(carnCoord.X, carnCoord.Y, "c" + i, 30));
             }
 
 
             CreateNewGame(20, createHerbivores, createCarnivores);
+        }
+
+        private IHaveCoordinates GetRandomSpace(List<IHaveCoordinates> spaces)
+        {
+            var index = _rnd.Next(0, spaces.Count);
+            var retVal = spaces[index];
+            spaces.RemoveAt(index);
+            return retVal;
         }
 
         public void CreateNewGame(int size, IEnumerable<Herbivore> herbivores, IEnumerable<Carnivore> carnivores)

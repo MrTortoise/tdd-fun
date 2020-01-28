@@ -20,7 +20,8 @@ namespace TestDrivingFun.Engine
             IApply<CreatePlantAccepted>,
             IApply<CarnivoreMoved>,
             IApply<HerbivoreMoved>,
-            IApply<CarnivoreAteHerbivore>
+            IApply<CarnivoreAteHerbivore>,
+            IApply<CarnivoreDied>
         {
             public CellType[,] Cells { get; private set; } = new CellType[0, 0];
 
@@ -53,7 +54,7 @@ namespace TestDrivingFun.Engine
             public void Apply(CreateCarnivoreAccepted @event)
             {
                 Cells[@event.X, @event.Y] = CellType.Carnivore;
-                Carnivores.Add(@event.CarnivoreId, new Carnivore(@event.X, @event.Y, @event.CarnivoreId));
+                Carnivores.Add(@event.CarnivoreId, new Carnivore(@event.X, @event.Y, @event.CarnivoreId, @event.MovesUntilDeath));
             }
 
             public void Apply(CreatePlantAccepted @event)
@@ -66,7 +67,7 @@ namespace TestDrivingFun.Engine
                 Cells[@event.OldPosition.X, @event.OldPosition.Y] = CellType.Default;
                 Cells[@event.NewPosition.X, @event.NewPosition.Y] = CellType.Carnivore;
                 
-                Carnivores[@event.CarnivoreId].SetPosition(@event.NewPosition);
+                Carnivores[@event.CarnivoreId].MoveTo(@event.NewPosition);
             }
 
             public void Apply(HerbivoreMoved @event)
@@ -83,9 +84,17 @@ namespace TestDrivingFun.Engine
                 var herbivore = Herbivores.Values.Single(h => h.X == @event.NewPosition.X && h.Y == @event.NewPosition.Y);
 
                 Cells[carnivore.X, carnivore.Y] = CellType.Default;
-                carnivore.SetPosition(herbivore);
+                carnivore.MoveTo(herbivore);
                 Herbivores.Remove(herbivore.Id);
                 Cells[herbivore.X, herbivore.Y] = CellType.Carnivore;
+            }
+
+            public void Apply(CarnivoreDied @event)
+            {
+                var carnivore = Carnivores[@event.CarnivoreId];
+                Carnivores.Remove(@event.CarnivoreId);
+
+                Cells[carnivore.X, carnivore.Y] = CellType.Default;
             }
         }
 
@@ -156,7 +165,7 @@ namespace TestDrivingFun.Engine
             CheckPositionIsDefault(command);
             return new List<CreateCarnivoreAccepted>
             {
-                new CreateCarnivoreAccepted(command.CarnivoreId, command.X, command.Y, command)
+                new CreateCarnivoreAccepted(command.CarnivoreId, command.X, command.Y,command.MovesUntilDeath, command)
             };
         }
 

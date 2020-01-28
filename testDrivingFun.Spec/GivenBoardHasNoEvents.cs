@@ -18,7 +18,7 @@ namespace testDrivingFun.Spec
             };
             var carnivores = new List<Carnivore>
             {
-                new Carnivore(2, 2, String.Empty)
+                new Carnivore(2, 2, String.Empty, 10)
             };
             var when = new CreateBoard(20, 20, herbivores, carnivores, "woop");
             var then = new List<Event>
@@ -45,10 +45,10 @@ namespace testDrivingFun.Spec
                     Message.CorrelationId, Message.CreatedOn)
             };
 
-            var when = new CreateCarnivore("testivore", 2, 3, "woop2");
+            var when = new CreateCarnivore("testivore", 2, 3, 20, "woop2");
             var then = new List<Event>
             {
-                new CreateCarnivoreAccepted("testivore",2, 3, Message)
+                new CreateCarnivoreAccepted("testivore",2, 3, 20, Message)
             };
 
             var results = Execute(given, when, then, events => new Surface(events, new Random()));
@@ -65,10 +65,10 @@ namespace testDrivingFun.Spec
             {
                 new CreateBoardAccepted(20, 20, new List<Herbivore>(), new List<Carnivore>(), Message.CausationId,
                     Message.CorrelationId, Message.CreatedOn),
-                new CreateCarnivoreAccepted("testivore",2, 3, Message)
+                new CreateCarnivoreAccepted("testivore",2, 3, 20, Message)
             };
 
-            var when = new CreateCarnivore("testivore",2, 3, "woop2");
+            var when = new CreateCarnivore("testivore",2, 3, 20, "woop2");
 
             Execute(given, when, typeof(Surface.PositionAlreadyTakenException), events => new Surface(events, new Random()));
         }

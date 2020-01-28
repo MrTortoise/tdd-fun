@@ -15,7 +15,7 @@ namespace TestDrivingFun.Console
             var coordinates = BuildUniqueCoordinates(20, rnd, sizeOfSurface);
             var surfaceEvents = new List<Event>()
             {
-                new CreateBoardAccepted(sizeOfSurface, sizeOfSurface, coordinates.Take(10).Select(c=>new Herbivore(c.X,c.Y, "asd")), coordinates.Skip(10).Select(c=>new Carnivore(c.X,c.Y, "isaac")), "none", "none", DateTime.Now)
+                new CreateBoardAccepted(sizeOfSurface, sizeOfSurface, coordinates.Take(10).Select(c=>new Herbivore(c.X,c.Y, "asd")), coordinates.Skip(10).Select(c=>new Carnivore(c.X,c.Y, "isaac", 10)), "none", "none", DateTime.Now)
             };
             var surface = new Surface(surfaceEvents, rnd);
 
@@ -83,7 +83,7 @@ namespace TestDrivingFun.Console
             var y = rnd.Next(sizeOfSurface);
             try
             {
-                var events = surface.Handle(new CreateCarnivore("testivore", x, y, "createCarnivore-" + i));
+                var events = surface.Handle(new CreateCarnivore("testivore", x, y, 30, "createCarnivore-" + i));
                 surfaceEvents.AddRange(events);
                 return surface;
             }
