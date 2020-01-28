@@ -43,10 +43,10 @@ namespace TestDrivingFun.Engine
 
             for (int i = 1; i < 11; i++)
             {
-                var herbCoord = GetRandomSpace(spaces);
-                createHerbivores.Add(new Herbivore(herbCoord.X, herbCoord.Y, "h" + i));
-                var carnCoord = GetRandomSpace(spaces);
-                createCarnivores.Add(new Carnivore(carnCoord.X, carnCoord.Y, "c" + i, 30));
+                var herbiCoord = GetRandomSpace(spaces);
+                createHerbivores.Add(new Herbivore(herbiCoord.X, herbiCoord.Y, "h" + i));
+                var carniCoord = GetRandomSpace(spaces);
+                createCarnivores.Add(new Carnivore(carniCoord.X, carniCoord.Y, "c" + i, 30));
             }
 
 

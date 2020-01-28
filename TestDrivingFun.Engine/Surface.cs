@@ -84,7 +84,7 @@ namespace TestDrivingFun.Engine
                 var herbivore = Herbivores.Values.Single(h => h.X == @event.NewPosition.X && h.Y == @event.NewPosition.Y);
 
                 Cells[carnivore.X, carnivore.Y] = CellType.Default;
-                carnivore.MoveTo(herbivore);
+                carnivore.Eat(herbivore);
                 Herbivores.Remove(herbivore.Id);
                 Cells[herbivore.X, herbivore.Y] = CellType.Carnivore;
             }

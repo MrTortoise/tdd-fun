@@ -18,8 +18,11 @@ namespace TestDrivingFun.Engine
             X = x;
             Y = y;
             Id = id;
+            MovesLeftAfterEating = movesUntilDeath;
             MovesUntilDeath = movesUntilDeath;
         }
+
+        public int MovesLeftAfterEating { get;  }
 
         public int X { get; set; }
         public int Y { get; set; }
@@ -98,6 +101,13 @@ namespace TestDrivingFun.Engine
             X = newPosition.X;
             Y = newPosition.Y;
             MovesUntilDeath--;
+        }
+
+        public void Eat(IHaveCoordinates herbivore)
+        {
+            X = herbivore.X;
+            Y = herbivore.Y;
+            MovesUntilDeath = MovesLeftAfterEating;
         }
     }
 }
