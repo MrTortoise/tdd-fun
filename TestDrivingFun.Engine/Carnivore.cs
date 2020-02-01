@@ -8,7 +8,7 @@ namespace TestDrivingFun.Engine
 {
     public interface IMove
     {
-        Event Move(Surface.CellType[,] board, int numberOfRows, int numberOfColumns, Random rnd, Message cause);
+        IEnumerable<Event> Move(Surface.CellType[,] board, int numberOfRows, int numberOfColumns, Random rnd, Message cause);
     }
 
     public class Carnivore : IHaveCoordinates, IMove
@@ -24,18 +24,19 @@ namespace TestDrivingFun.Engine
 
         public int MovesLeftAfterEating { get;  }
 
-        public int X { get; set; }
-        public int Y { get; set; }
+        public int X { get; private set; }
+        public int Y { get; private set; }
         public string Id { get; }
-        public int MovesUntilDeath { get; set; }
+        public int MovesUntilDeath { get; private set; }
 
-        public Event Move(Surface.CellType[,] board, int numberOfRows, int numberOfColumns, Random rnd, Message cause)
+        public IEnumerable<Event> Move(Surface.CellType[,] board, int numberOfRows, int numberOfColumns, Random rnd,
+            Message cause)
         {
             var possibleMoves = this.GetSurroundingCells(1, numberOfRows, numberOfColumns);
             return PickMove(possibleMoves, rnd, board, cause, numberOfRows, numberOfColumns);
         }
 
-        private Event PickMove(IEnumerable<Coordinate> validMoves, Random rnd, Surface.CellType[,] board, Message cause,
+        private IEnumerable<Event> PickMove(IEnumerable<Coordinate> validMoves, Random rnd, Surface.CellType[,] board, Message cause,
             int numberOfRows, int numberOfColumns)
         {
             var coordinates = validMoves.ToList();
@@ -49,19 +50,18 @@ namespace TestDrivingFun.Engine
             if (herbivoresToEat.Any())
             {
                 var randomHerbivore = rnd.Next(0, herbivoresToEat.Count());
-                return new CarnivoreAteHerbivore(this, herbivoresToEat[randomHerbivore], cause);
+                return new List<Event>() {new CarnivoreAteHerbivore(this, herbivoresToEat[randomHerbivore], cause)};
             }
 
             if (MovesUntilDeath == 1)
             {
-                return new CarnivoreDied(Id, cause);
+                return new List<Event>() { new CarnivoreDied(Id, cause)};
             }
 
-            var carnivoresToRunFrom = coordinates.Where(m =>
-            {
-                var cellType = board[m.X, m.Y];
-                return cellType == Surface.CellType.Carnivore;
-            }).ToList();
+            var carnivoresToRunFrom = 
+                coordinates
+                    .Where(m => board[m.X, m.Y] == Surface.CellType.Carnivore)
+                    .ToList();
 
             if (carnivoresToRunFrom.Any())
             {
@@ -72,13 +72,13 @@ namespace TestDrivingFun.Engine
                 var newCoordinate = new Coordinate(X + vectorX, Y + vectorY);
                 if (IsValid(newCoordinate, board, numberOfRows, numberOfColumns))
                 {
-                    return new CarnivoreMoved(this, newCoordinate, cause);
+                    return new List<Event>() { new CarnivoreMoved(this, newCoordinate, cause)};
                 }
             }
 
             var emptyMoves = coordinates.Where(c => board[c.X, c.Y] == Surface.CellType.Default).ToList();
             var randomMove = rnd.Next(0, emptyMoves.Count);
-            return new CarnivoreMoved(this, emptyMoves[randomMove], cause);
+            return new List<Event>() { new CarnivoreMoved(this, emptyMoves[randomMove], cause)};
         }
 
         private bool IsValid(Coordinate coordinate, Surface.CellType[,] board, int numberOfRows, int numberOfColumns)

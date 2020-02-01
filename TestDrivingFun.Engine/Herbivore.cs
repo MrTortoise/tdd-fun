@@ -17,17 +17,18 @@ namespace TestDrivingFun.Engine
         public int X { get; private set; }
         public int Y { get; private set; }
         public string Id { get; }
-        public Event Move(Surface.CellType[,] board, int numberOfRows, int numberOfColumns, Random rnd, Message cause)
+        public IEnumerable<Event> Move(Surface.CellType[,] board, int numberOfRows, int numberOfColumns, Random rnd,
+            Message cause)
         {
             var possibleMoves = this.GetSurroundingCells(1, numberOfRows, numberOfColumns);
             var validMoves = GetValidMoves(possibleMoves, board).ToList();
             if (!validMoves.Any())
             {
-                return Event.None;
+                return new Event[0];
             }
             var move = PickMove(validMoves, rnd);
 
-            return new HerbivoreMoved(this, move, cause);
+            return new List<Event>() {new HerbivoreMoved(this, move, cause)};
         }
 
         private Coordinate PickMove(IEnumerable<Coordinate> validMoves, Random rnd)

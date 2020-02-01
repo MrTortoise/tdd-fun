@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace TestDrivingFun.Engine
 {
@@ -182,24 +183,31 @@ namespace TestDrivingFun.Engine
         {
             foreach (var carnivore in _state.Carnivores.Values)
             {
-                var @event = carnivore.Move(_state.Cells, Rows, Columns, _random, command);
-                if (@event == Event.None)
+                var events = carnivore.Move(_state.Cells, Rows, Columns, _random, command).ToList();
+                if (!events.Any())
                 {
                     continue;
                 }
-                _state.Apply((dynamic)@event);
-                yield return @event;
+
+                foreach (var @event in events)
+                {
+                    _state.Apply((dynamic)@event);
+                    yield return @event;
+                }
             }
 
             foreach (var herbivore in _state.Herbivores.Values)
             {
-                var @event = herbivore.Move(_state.Cells, Rows, Columns, _random, command);
-                if (@event == Event.None)
+                var events = herbivore.Move(_state.Cells, Rows, Columns, _random, command).ToList();
+                if (!events.Any())
                 {
                     continue;
                 }
-                _state.Apply((dynamic)@event);
-                yield return @event;
+                foreach (var @event in events)
+                {
+                    _state.Apply((dynamic)@event);
+                    yield return @event;
+                }
             }
         }
 
