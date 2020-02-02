@@ -45,26 +45,32 @@ namespace testDrivingFun.Spec
             var herbivores = new List<Herbivore>()
             {
                 new Herbivore(10, 10, "h1"),
-                new Herbivore(10, 10, "h2")
+                new Herbivore(10, 11, "h2")
             };
             _ut.CreateNewGame(20, herbivores, new List<Carnivore>());
 
             _ut.Bump();
 
-            var @event = _eventStore.Events.Values.First().Last();
-            Assert.Equal(typeof(HerbivoreMoved).Name, @event.GetType().Name);
+            var eventStream = _eventStore.Events.Values.First();
+            var herbivoreLaidEggsEvents = eventStream.Where(e=>e.GetType().Name == typeof(HerbivoreLaidEgg).Name).ToList();
+            Assert.True(herbivoreLaidEggsEvents.Any());
 
-            var movedEvent = (HerbivoreMoved)@event;
-            Assert.Equal(10, movedEvent.OldPosition.X);
-            Assert.Equal(10, movedEvent.OldPosition.Y);
+            var laidEggEvent = (HerbivoreLaidEgg)herbivoreLaidEggsEvents.First();
+            Assert.Equal(10, laidEggEvent.X);
+            Assert.Equal(10, laidEggEvent.Y);
 
-            Assert.True(movedEvent.NewPosition.X >= 9);
-            Assert.True(movedEvent.NewPosition.X <= 11);
 
-            Assert.True(movedEvent.NewPosition.Y >= 9);
-            Assert.True(movedEvent.NewPosition.Y <= 11);
+            //var movedEvent = (HerbivoreMoved)@event;
+            //Assert.Equal(10, movedEvent.OldPosition.X);
+            //Assert.Equal(10, movedEvent.OldPosition.Y);
 
-            Assert.False(movedEvent.OldPosition.X == movedEvent.NewPosition.X && movedEvent.OldPosition.Y == movedEvent.NewPosition.Y);
+            //Assert.True(movedEvent.NewPosition.X >= 9);
+            //Assert.True(movedEvent.NewPosition.X <= 11);
+
+            //Assert.True(movedEvent.NewPosition.Y >= 9);
+            //Assert.True(movedEvent.NewPosition.Y <= 11);
+
+            //Assert.False(movedEvent.OldPosition.X == movedEvent.NewPosition.X && movedEvent.OldPosition.Y == movedEvent.NewPosition.Y);
 
         }
     }

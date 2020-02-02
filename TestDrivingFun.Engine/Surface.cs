@@ -22,7 +22,8 @@ namespace TestDrivingFun.Engine
             IApply<CarnivoreMoved>,
             IApply<HerbivoreMoved>,
             IApply<CarnivoreAteHerbivore>,
-            IApply<CarnivoreDied>
+            IApply<CarnivoreDied>,
+            IApply<HerbivoreLaidEgg>
         {
             public CellType[,] Cells { get; private set; } = new CellType[0, 0];
 
@@ -32,6 +33,8 @@ namespace TestDrivingFun.Engine
 
             public Dictionary<string, Carnivore> Carnivores { get; } = new Dictionary<string, Carnivore>();
             public Dictionary<string, Herbivore> Herbivores { get; } = new Dictionary<string, Herbivore>();
+
+            public List<HerbivoreEgg> HerbivoreEggs { get; } = new List<HerbivoreEgg>();
 
             public void Apply(CreateBoardAccepted @event)
             {
@@ -46,6 +49,7 @@ namespace TestDrivingFun.Engine
                     }
                 }
             }
+
             public void Apply(CreateHerbivoreAccepted @event)
             {
                 Cells[@event.X, @event.Y] = CellType.Herbivore;
@@ -96,6 +100,12 @@ namespace TestDrivingFun.Engine
                 Carnivores.Remove(@event.CarnivoreId);
 
                 Cells[carnivore.X, carnivore.Y] = CellType.Default;
+            }
+
+            public void Apply(HerbivoreLaidEgg @event)
+            {
+                HerbivoreEggs.Add(new HerbivoreEgg(@event.EggId, @event.X, @event.Y));
+                Cells[@event.X, @event.Y] = CellType.HerbivoreEgg;
             }
         }
 
@@ -224,7 +234,8 @@ namespace TestDrivingFun.Engine
             Default,
             Herbivore,
             Carnivore,
-            Plants
+            Plants,
+            HerbivoreEgg
         }
 
         public class PositionAlreadyTakenException : Exception
@@ -232,6 +243,20 @@ namespace TestDrivingFun.Engine
             public PositionAlreadyTakenException(in int x, in int y, CellType stateCell) : base($"attempted to create something at [{x},{y}] but its {stateCell}")
             {
             }
+        }
+    }
+
+    public class HerbivoreEgg
+    {
+        public string Id { get; }
+        public int X { get; }
+        public int Y { get; }
+
+        public HerbivoreEgg(string id, in int x, in int y)
+        {
+            Id = id;
+            X = x;
+            Y = y;
         }
     }
 }

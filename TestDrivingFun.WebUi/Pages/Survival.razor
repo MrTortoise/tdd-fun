@@ -14,35 +14,40 @@
     <div class="board">
         @for (int i = 0; i < game.Size; i++)
         {
-            <div class="column">
-                @for (int j = 0; j < game.Size; j++)
+        <div class="column">
+            @for (int j = 0; j < game.Size; j++)
+            {
+                @switch (game.Cells[i, j])
                 {
-                    @switch (game.Cells[i, j])
-                    {
-                        case Surface.CellType.Default:
-                            {
-                                <div class="empty-cell"></div>
-                                break;
-                            }
-                        case Surface.CellType.Herbivore:
-                            {
-                                <img class="cell" src="images/ank.png" />
-                                break;
-                            }
-                        case Surface.CellType.Carnivore:
-                            {
-                                <img class="cell" src="/images/rex.svg" />
-                                break;
-                            }
-                    }}
-            </div>
+                    case Surface.CellType.Default:
+                        {
+                            <div class="empty-cell"></div>
+                            break;
+                        }
+                    case Surface.CellType.Herbivore:
+                        {
+                            <img class="cell" src="images/ank.png" />
+                            break;
+                        }
+                    case Surface.CellType.Carnivore:
+                        {
+                            <img class="cell" src="/images/rex.svg" />
+                            break;
+                        }
+                    case Surface.CellType.HerbivoreEgg:
+                        {
+                            <img class="cell" src="/images/dinoegg.jpg" />
+                            break;
+                        }
+                }}
+        </div>
         }
 
     </div>
 
     <button class="btn btn-primary" @onclick="Bump">Bump</button>
 
-}
+                        }
 
 
 <img class="cell" src="images/ank.png" />
@@ -52,19 +57,19 @@
 
 @code {
     Random rnd = new Random();
-    bool gameActive = false;
+                        bool gameActive = false;
 
-    SurvivalGame game;
+                        SurvivalGame game;
 
-    void Start()
-    {
-        game = new SurvivalGame(Guid.NewGuid().ToString(), rnd, new InMemoryEventStore());
-        game.CreateDefaultGame();
-        gameActive = true;
-    }
+                        void Start()
+                        {
+                            game = new SurvivalGame(Guid.NewGuid().ToString(), rnd, new InMemoryEventStore());
+                            game.CreateDefaultGame();
+                            gameActive = true;
+                        }
 
-    void Bump()
-    {
-        game.Bump();
-    }
-}
+                        void Bump()
+                        {
+                            game.Bump();
+                        }
+                    }
